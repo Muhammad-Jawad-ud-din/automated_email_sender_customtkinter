@@ -3,7 +3,7 @@ from ButtonsBar import ButtonsBar
 from MiddleFame import MiddleFrame
 from FilesFrame import FilesFrame
 
-customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+customtkinter.set_appearance_mode("system")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
 
 class App(customtkinter.CTk):
@@ -18,7 +18,7 @@ class App(customtkinter.CTk):
 
         
         self.buttonsBar = ButtonsBar(master=self)
-        self.buttonsBar.grid(row=0, column=0, ipadx=50, padx=10, pady=10, sticky="nsew")
+        self.buttonsBar.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         
         self.buttonsBar1 = MiddleFrame(master=self)
         self.buttonsBar1.grid(row=0, column=1, ipadx=220, pady=10, sticky="nsew")
@@ -29,6 +29,7 @@ class App(customtkinter.CTk):
         # self.buttonsBar = ButtonsBar(master=self)
         # self.buttonsBar.grid(row=0, column=0, padx=(0, 500), sticky="nsew")
 
+               
 if __name__ == "__main__":
     app = App("Automated Email Sender", (980, 500))
     app.mainloop()
