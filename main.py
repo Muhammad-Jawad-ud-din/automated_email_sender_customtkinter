@@ -20,12 +20,15 @@ class App(customtkinter.CTk):
         self.buttonsBar = ButtonsBar(master=self)
         self.buttonsBar.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         
-        self.buttonsBar1 = MiddleFrame(master=self)
-        self.buttonsBar1.grid(row=0, column=1, ipadx=150, pady=10, sticky="nsew")
+        self.middleFrame = MiddleFrame(master=self)
+        self.middleFrame.grid(row=0, column=1, ipadx=150, pady=10, sticky="nsew")
+        self.buttonsBar.tabularView = self.middleFrame.tabularView
+        self.buttonsBar.tempateArea = self.middleFrame.tempateArea
 
-        self.buttonsBar2 = FilesFrame(master=self)
-        self.buttonsBar2.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")        
-
+        self.filesFrame = FilesFrame(master=self)
+        self.filesFrame.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")        
+        self.buttonsBar.filesFrame = self.filesFrame; 
+        
         self.startBtn = customtkinter.CTkButton(self, text="Send Emails", width=90)
         self.startBtn.grid(row=1, column=2 , padx=(0, 20), pady=(0, 10), sticky="e")
 
