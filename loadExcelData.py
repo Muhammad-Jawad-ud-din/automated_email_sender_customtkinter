@@ -1,5 +1,5 @@
 import customtkinter
-import os, numpy
+import numpy
 from tkinter import filedialog
 from CTkTable import *
 from CTkXYFrame import *
