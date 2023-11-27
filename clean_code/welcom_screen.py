@@ -1,5 +1,5 @@
 import customtkinter
-from PIL import Image
+
 GLOBAL_FONT = "Cascadia Mono" # "Segoe Print" "Constantia"
 DESCRIPTION_TEXT = '''Welcome to the Email Sender GUI App! 
 This user-friendly tool simplifies email distribution by allowing seamless import of student 
@@ -36,7 +36,7 @@ class WelcomeScreen(customtkinter.CTkFrame):
         self.singleFileSender.grid(row=0, column=1, padx=40, pady=40, sticky="nsew")
 
     def navigateToResultsUtility(self):
-        self.master.navigateToResultsUtility()
+        self.master.navigateToResultsUtility(self)
     
     def navigateToJoiningInstructionsUitlity(self):
-        self.master.navigateToJoiningInstructionsUitlity()
+        self.master.navigateToJoiningInstructionsUitlity(self)
