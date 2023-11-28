@@ -26,7 +26,7 @@ class CTkScrollableTable(customtkinter.CTkFrame):
         anchor = "c",
         hover_color = None,
         hover = False,
-        justify = "center",
+        justify = "nw",
         wraplength: int = 1000,
         **kwargs):
         
