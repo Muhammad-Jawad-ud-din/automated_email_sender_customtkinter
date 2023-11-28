@@ -1,8 +1,8 @@
 import customtkinter
 import copy
 
-class CTkTable(customtkinter.CTkFrame):
-    """ CTkTable Widget """
+class CTkScrollableTable(customtkinter.CTkFrame):
+    """ CTkScrollableTable Widget """
     
     def __init__(
         self,

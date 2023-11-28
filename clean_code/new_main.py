@@ -16,8 +16,11 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        self.welcomScreen = WelcomeScreen(self)
-        self.welcomScreen.grid(row=0, column=0, sticky="nsew")
+        # self.welcomScreen = WelcomeScreen(self)
+        # self.welcomScreen.grid(row=0, column=0, sticky="nsew")
+
+        self.resultsUtility = ResultsUtility(self)
+        self.resultsUtility.grid(row=0, column=0, sticky="nsew")
 
         self.mainloop()
 
@@ -45,4 +48,4 @@ class App(customtkinter.CTk):
 
 
 if __name__ == "__main__":
-    app = App("Automated Emailer", (980, 500))
+    app = App("Automated Emailer", (1080, 500))
