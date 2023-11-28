@@ -12,15 +12,14 @@ class App(customtkinter.CTk):
         self.geometry(f"{size[0]}x{size[1]}")
         self.title(title)
         self.resizable(False, False)
-
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        # self.welcomScreen = WelcomeScreen(self)
-        # self.welcomScreen.grid(row=0, column=0, sticky="nsew")
+        self.welcomScreen = WelcomeScreen(self)
+        self.welcomScreen.grid(row=0, column=0, sticky="nsew")
 
-        self.resultsUtility = ResultsUtility(self)
-        self.resultsUtility.grid(row=0, column=0, sticky="nsew")
+        # self.resultsUtility = ResultsUtility(self)
+        # self.resultsUtility.grid(row=0, column=0, sticky="nsew")
 
         self.mainloop()
 
