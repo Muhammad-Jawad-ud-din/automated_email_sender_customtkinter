@@ -5,6 +5,7 @@ import customtkinter
 
 from tkinter import messagebox
 from tkinter import filedialog
+from collections import defaultdict
 from CTkScrollableTable import CTkScrollableTable
 from CTkXYScrollableFrame import CTkXYScrollableFrame
 
@@ -14,6 +15,8 @@ STUDENTS_LIST      = list()
 EMAIL_BODY_TEXT    = ''
 EMAIL_SUBJECT_TEXT = ''
 FONT_FAMILY        = "Cascadia Mono"
+STUDENT_DATA_FRAME = ""
+
 
 class LeftSideBar(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -73,7 +76,7 @@ class LeftSideBar(customtkinter.CTkFrame):
         messagebox.showinfo(title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
 
     def getSheetName(self, sheets):
-
+        
         def loadSheet():
             if not comboBox.get() in sheets:
                 messagebox.showerror(title="Invalid", message="Invalid Sheet Name Provided, Please Select One from the list")
@@ -99,9 +102,42 @@ class LeftSideBar(customtkinter.CTkFrame):
         
         sheetsPopUpWindow.geometry("+%d+%d" % (self.main.winfo_rootx()+50,self.main.winfo_rooty()+50))
         self.main.wait_window(sheetsPopUpWindow)
-        
+    
+    
     def loadStudentsData(self):
         global STUDENTS_LIST
+        global STUDENT_DATA_FRAME
+
+        def validateExcelData(df):
+            # Check if the first column contains numeric values (ID)
+            if not pandas.to_numeric(df.iloc[:, 0], errors='coerce').notnull().all():
+                messagebox.showerror(title="Invalid Student IDs", message="First column should contain only numeric values (ID).")
+                return False
+
+            # Check if the fourth column contains valid email addresses
+            if not df.iloc[:, 3].astype(str).str.contains('@').all():
+                messagebox.showerror(title="Invalid Email Addresses", message="Fourth column should contain valid email addresses.")
+                return False
+
+            # validate the input excel file
+            if df.isnull().values.any():
+                messagebox.showerror(title="Empty Cells", message="Empty, Null or Undefined values found in the excel, please provide clean data")
+                return False
+
+            # Check for duplicate IDs
+            duplicate_ids = df[df.duplicated(df.columns[0], keep=False)]
+            if not duplicate_ids.empty:
+                messagebox.showerror(title="Dupilcate IDs", message="Duplicate IDs found:")
+                return False
+
+            # Check for duplicate email addresses
+            duplicate_emails = df[df.duplicated(df.columns[3], keep=False)]
+            if not duplicate_emails.empty:
+                messagebox.showerror(title="Duplicate Emails", message="Duplicate Email Addresses found:")
+                return False
+
+            return True
+
         file = filedialog.askopenfile(filetypes=[("Excel files", ".xlsx .xls")])
         excelFile = pandas.ExcelFile(file.name)
         
@@ -111,17 +147,20 @@ class LeftSideBar(customtkinter.CTkFrame):
         self.main.deiconify()
 
         excelDataFrame = pandas.read_excel(file.name, self.sheetName)
-        columns = excelDataFrame.columns.values.tolist()
-        STUDENTS_LIST = excelDataFrame.to_numpy()
-        studentsList = numpy.insert(STUDENTS_LIST, 0, columns, axis=0).tolist()
+        if validateExcelData(excelDataFrame):
+            STUDENT_DATA_FRAME = excelDataFrame.copy()
+            STUDENTS_LIST = excelDataFrame.to_numpy()
 
-        self.studentsDataTable = CTkScrollableTable(master=self.studentsDataFrame, row=len(studentsList), column=len(studentsList[0]), values=studentsList)
-        self.studentsDataTable.pack()
+            columns = excelDataFrame.columns.values.tolist()
+            studentsList = numpy.insert(STUDENTS_LIST, 0, columns, axis=0).tolist()
 
-        self.loadExcelBtn.configure(state="disabled")
-        self.clearStudentsBtn.configure(state="normal")
+            self.studentsDataTable = CTkScrollableTable(master=self.studentsDataFrame, row=len(studentsList), column=len(studentsList[0]), values=studentsList)
+            self.studentsDataTable.pack()
 
-        messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
+            self.loadExcelBtn.configure(state="disabled")
+            self.clearStudentsBtn.configure(state="normal")
+
+            messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
 
     def clearStudentsData(self):
         # On call it should remove the table from the filesSideBar
@@ -142,6 +181,7 @@ class LeftSideBar(customtkinter.CTkFrame):
             self.filesTable.destroy()
             self.clearPDFsBtn.configure(state="disabled")
             self.loadPDFsBtn.configure(state="normal")
+            PDFS_LIST = []
 
     def navigateToWelcomScreen(self):
         status = messagebox.askokcancel(title="You Sure?", message="Are You Sure to Proceed? Data on This Tab will be lost")
@@ -195,10 +235,51 @@ class BottomButtonsBar(customtkinter.CTkFrame):
         self.sendEmailsBtn.grid(row=0, column=0, padx=20, pady=(0, 5), sticky="e")
 
     def sendEmailsListner(self):
+
+        def formatData(papers, students, subject, body):
+            studentsDataWithPapers = defaultdict(lambda: {'email': '', 'first_name': '', 'full_name': '', 'papers': [], 'subject': '', 'body': ''})
+
+            for studentId, surname, fullname, email in students:
+                studentsDataWithPapers[studentId]['email'] = email
+                studentsDataWithPapers[studentId]['first_name'] = surname
+                studentsDataWithPapers[studentId]['full_name'] = fullname
+                studentsDataWithPapers[studentId]['subject'] = subject
+                studentsDataWithPapers[studentId]['body'] = body
+                
+                for paperName, pdf_path in papers:
+                    if str(studentId) in paperName:        
+                        studentsDataWithPapers[studentId]['papers'].append(pdf_path)
+
+            return studentsDataWithPapers
+        
         status = messagebox.askyesno(title="Send Emails?", message="Are You Sure To Proceed To Sender? Did You Double Check The Subject/Body/PDFs/Students Data?")
         if status:
+            global PDFS_LIST
+            global STUDENTS_LIST
+            global EMAIL_SUBJECT_TEXT 
+            global EMAIL_BODY_TEXT 
+
+            # PDFS_NAMES_LIST
+            # Studnets Data
+            # Subject & Body
+            EMAIL_SUBJECT_TEXT = self.master.middleFrame.subjectTextBox.get("0.0", "end-1c")
+            EMAIL_BODY_TEXT = self.master.middleFrame.bodyTextBox.get("0.0", "end-1c")
+            
+            formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
+            studentsWithMissingPapers = []
+            for studnetId, data in formattedData.items():
+                if len(data['papers']) == 0:
+                    studentsWithMissingPapers.append(studnetId)
+                    missingPaper = True
+            if missingPaper:
+                messagebox.showerror(title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
+                return
+            
+            # On hold the ResultsUtility
+            # Open the emails Utility
+            # On Release (Success: ReportUtility)
             print("Calling the master navigateToEmailSenderUtility")
-            self.master.navigateToEmailSenderUtility()
+            self.master.navigateToEmailSenderUtility(formattedData)
 
 
 class ResultsUtility(customtkinter.CTkFrame):
@@ -232,24 +313,12 @@ class ResultsUtility(customtkinter.CTkFrame):
     def navigateToWelcomScreen(self):
         self.master.navigateToWelcomScreen(self)
 
-    def navigateToEmailSenderUtility(self):
-        global PDFS_LIST
-        global STUDENTS_LIST
-        global EMAIL_SUBJECT_TEXT 
-        global EMAIL_BODY_TEXT 
-
-        # PDFS_NAMES_LIST
-        # Studnets Data
-        # Subject & Body
-        EMAIL_SUBJECT_TEXT = self.middleFrame.subjectTextBox.get("0.0", "end-1c")
-        EMAIL_BODY_TEXT = self.middleFrame.bodyTextBox.get("0.0", "end-1c")
-        
-        print(PDFS_LIST)
-        print(STUDENTS_LIST)
-        print(EMAIL_SUBJECT_TEXT)
-        print(EMAIL_BODY_TEXT)
-
+    def navigateToEmailSenderUtility(self, studentsData):
+        print(studentsData)
         # On hold the ResultsUtility
         # Open the emails Utility
         # On Release (Success: ReportUtility)
-        pass
+        pass 
+
+    
+    
