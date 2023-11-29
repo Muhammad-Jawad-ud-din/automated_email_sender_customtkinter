@@ -53,7 +53,6 @@ class LeftSideBar(customtkinter.CTkFrame):
 
         self.backBtn.grid(row=5, column=0)
 
-
     def loadPDFsDir(self):
         global PDFS_LIST
 
@@ -291,10 +290,6 @@ class BottomButtonsBar(customtkinter.CTkFrame):
                 messagebox.showerror(title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
                 return
             
-            # On hold the ResultsUtility
-            # Open the emails Utility
-            # On Release (Success: ReportUtility)
-            messagebox.showinfo(title="All Set", message="Congratulations, you're a hero")
             print("Calling the master navigateToEmailSenderUtility")
             self.master.navigateToEmailSenderUtility(formattedData)
 
@@ -327,15 +322,19 @@ class ResultsUtility(customtkinter.CTkFrame):
         self.bottomButtonBar = BottomButtonsBar(self)
         self.bottomButtonBar.grid(row=1, column=1, ipady=20, columnspan=2, sticky="nsew")
 
+        # Remove these later (critical)
+        self.leftSideBar.loadPDFsDir()
+        self.leftSideBar.loadStudentsData()
+
     def navigateToWelcomScreen(self):
         self.master.navigateToWelcomScreen(self)
 
-    def navigateToEmailSenderUtility(self, studentsData):
-        print(studentsData)
+    def navigateToEmailSenderUtility(self, formattedData):
         # On hold the ResultsUtility
         # Open the emails Utility
         # On Release (Success: ReportUtility)
-        pass 
+        self.master.navigateToEmailSenderUtility(formattedData)
+            
 
     
     
