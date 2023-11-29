@@ -277,13 +277,16 @@ class BottomButtonsBar(customtkinter.CTkFrame):
             elif len(EMAIL_BODY_TEXT) == 0:
                 messagebox.showerror(title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
                 return
-
+            
             formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
             studentsWithMissingPapers = []
+            missingPaper = False
+
             for studnetId, data in formattedData.items():
                 if len(data['papers']) == 0:
                     studentsWithMissingPapers.append(studnetId)
                     missingPaper = True
+
             if missingPaper:
                 messagebox.showerror(title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
                 return
@@ -291,6 +294,7 @@ class BottomButtonsBar(customtkinter.CTkFrame):
             # On hold the ResultsUtility
             # Open the emails Utility
             # On Release (Success: ReportUtility)
+            messagebox.showinfo(title="All Set", message="Congratulations, you're a hero")
             print("Calling the master navigateToEmailSenderUtility")
             self.master.navigateToEmailSenderUtility(formattedData)
 
