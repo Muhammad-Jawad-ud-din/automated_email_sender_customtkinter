@@ -265,6 +265,19 @@ class BottomButtonsBar(customtkinter.CTkFrame):
             EMAIL_SUBJECT_TEXT = self.master.middleFrame.subjectTextBox.get("0.0", "end-1c")
             EMAIL_BODY_TEXT = self.master.middleFrame.bodyTextBox.get("0.0", "end-1c")
             
+            if len(PDFS_LIST) == 0:
+                messagebox.showerror(title='Missing PDFs', message='Missing PDFs, make suer valid list of pdfs is loaded')
+                return
+            elif len(STUDENTS_LIST) == 0: 
+                messagebox.showerror(title='Missing Students Data', message='Missing Students Data, make suer valid list of students is loaded')
+                return
+            elif len(EMAIL_SUBJECT_TEXT) == 0:
+                messagebox.showerror(title='Missing Email Subject Text', message='Please Pate a Valid email subject in the subject area')
+                return
+            elif len(EMAIL_BODY_TEXT) == 0:
+                messagebox.showerror(title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
+                return
+
             formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
             studentsWithMissingPapers = []
             for studnetId, data in formattedData.items():
