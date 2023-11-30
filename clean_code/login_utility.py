@@ -1,5 +1,6 @@
 import customtkinter
 from tkinter import messagebox
+from threading import Thread
 
 FONT_FAMILY        = "Cascadia Mono"
 SMTP_SERVER = "smtp.titan.email" 
@@ -38,6 +39,10 @@ class LoginUtility(customtkinter.CTkToplevel):
         self.master.wait_window(self)
 
     def logInButtonHandler(self):
+        login_thread = Thread(target=self.login_thread_target)
+        login_thread.start()
+
+    def login_thread_target(self):
         self.logInButton.configure(state="disabled")
         emailAddress = self.usernameField.get()
         password = self.passwordField.get()
