@@ -65,6 +65,5 @@ class App(customtkinter.CTk):
             messagebox.showwarning(parent=self, title="Log In Failed", message="Couldn't Proceed Further...")
         self.deiconify()
         
-
 if __name__ == "__main__":
     app = App("Automated Emailer", SCREEN_SIZE)

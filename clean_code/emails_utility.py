@@ -1,5 +1,7 @@
 import customtkinter
 import time
+from threading import Thread
+
 from tkinter import messagebox
 from CTkScrollableTable import CTkScrollableTable
 from CTkXYScrollableFrame import CTkXYScrollableFrame
@@ -73,25 +75,27 @@ class EmailsUtility(customtkinter.CTkToplevel):
             self.destroy()
 
     def send_emails_to_students(self):
-        data = self.data
-        self.progress_bar.set(0)
+        sender_thread = Thread(target=self.sender_thread_target)
+        sender_thread.start()
+
+    def sender_thread_target(self):
         self.start_process_btn.configure(state='disabled')
-        
+        data = self.data
         total_length = len(data)
         step = 0
         delete_index = 1
+
         for student_id, student_details in data.items():
-            try:                
+            try:
+                time.sleep(4)
                 self.email_server.sendmail(self.session_email_address, 'someemailaddress@someserver.com', f'{student_details}')
                 self.students_table.delete_row(delete_index)
-                
-                time.sleep(4)
 
             except Exception as e: 
                 delete_index += 1
-                messagebox.showerror(parent=self, title='Email Failed', message=f"Failed to send email to {student_id}")
             
             self.progress_bar.set(step + 1/total_length)
             step = step + 1/total_length
 
-        messagebox.showinfo(parent=self, title='Proceess Completed', message="Emails failed for remaining students on list (if any)")            
+        messagebox.showinfo(parent=self, title='Proceess Completed', message="Emails failed for remaining students on list (if any)")
+
