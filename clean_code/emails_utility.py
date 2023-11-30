@@ -1,6 +1,7 @@
 import customtkinter
 import time
 from threading import Thread
+from email.message import EmailMessage
 
 from tkinter import messagebox
 from CTkScrollableTable import CTkScrollableTable
@@ -11,7 +12,7 @@ SMTP_SERVER = "smtp.titan.email"
 SMTP_PORT = 587
 
 class EmailsUtility(customtkinter.CTkToplevel):
-    def __init__(self, master, size, email_server, session_email_address, data, **kwargs):
+    def __init__(self, master, size, mailer, session_email_address, data, **kwargs):
         super().__init__(master, **kwargs)
 
         self.master = master 
@@ -19,7 +20,7 @@ class EmailsUtility(customtkinter.CTkToplevel):
         self.data = data 
         self.session_email_address = session_email_address
         # self.session_password = session_password
-        self.email_server = email_server
+        self.mailer = mailer
 
         self.grid_rowconfigure(0, weight=4)
         self.grid_rowconfigure((1,2), weight=1)
@@ -51,9 +52,9 @@ class EmailsUtility(customtkinter.CTkToplevel):
         students = list()
 
         for student_id, student_details in data.items():
-            student_list = [student_id, student_details['email'], student_details['first_name'], student_details['full_name']]
-            for paper in student_details['papers']:
-                student_list.append(paper)
+            student_list = [student_id, student_details['email_address'], student_details['first_name'], student_details['full_name']]
+            for paper_name, paper_path in student_details['papers']:
+                student_list.append(paper_name)
 
             students.append(student_list)
 
@@ -87,10 +88,9 @@ class EmailsUtility(customtkinter.CTkToplevel):
 
         for student_id, student_details in data.items():
             try:
-                time.sleep(4)
-                self.email_server.sendmail(self.session_email_address, 'someemailaddress@someserver.com', f'{student_details}')
+                student_message = self.create_email_template_for_student(student_details)
+                self.mailer.send_message(student_message)
                 self.students_table.delete_row(delete_index)
-
             except Exception as e: 
                 delete_index += 1
             
@@ -100,4 +100,15 @@ class EmailsUtility(customtkinter.CTkToplevel):
         messagebox.showinfo(parent=self, title='Proceess Completed', message="Emails failed for remaining students on list (if any)")
 
     def create_email_template_for_student(self, student):
-        pass
+        student_message = EmailMessage()
+        student_message['Subject'] = student['subject']
+        student_message['To'] = 'someemailaddress@someserver.com'
+        student_message['From'] = self.session_email_address
+        student_message.set_content(student['email_body'])
+
+        for paper_name, paper_path in student['papers']:
+            with open(paper_path,  'rb') as paper_file:
+                paper_content = paper_file.read()
+                student_message.add_attachment(paper_content, maintype='application', subtype = 'octet-stream', filename=paper_name)
+
+        return student_message

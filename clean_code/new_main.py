@@ -22,7 +22,7 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         self.session_email_address = ''
-        self.email_server = '' 
+        self.mailer = '' 
         self.session_started = False
 
         self.welcomScreen = WelcomeScreen(self)
@@ -60,7 +60,7 @@ class App(customtkinter.CTk):
         self.withdraw()
         self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
         if self.session_started:
-            self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.email_server, self.session_email_address, data)
+            self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.mailer, self.session_email_address, data)
         else: 
             messagebox.showwarning(parent=self, title="Log In Failed", message="Couldn't Proceed Further...")
         self.deiconify()

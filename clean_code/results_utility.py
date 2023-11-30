@@ -73,7 +73,7 @@ class LeftSideBar(customtkinter.CTkFrame):
         self.loadPDFsBtn.configure(state='disabled')
         self.clearPDFsBtn.configure(state="normal")
         messagebox.showinfo(parent=self, title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
-
+        print(PDFS_LIST)
     def getSheetName(self, sheets):
         
         def loadSheet():
@@ -161,6 +161,7 @@ class LeftSideBar(customtkinter.CTkFrame):
 
             messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
 
+
     def clearStudentsData(self):
         # On call it should remove the table from the filesSideBar
         # Should disable the 'Clear PDFs' Button
@@ -236,18 +237,18 @@ class BottomButtonsBar(customtkinter.CTkFrame):
     def sendEmailsListner(self):
 
         def formatData(papers, students, subject, body):
-            studentsDataWithPapers = defaultdict(lambda: {'email': '', 'first_name': '', 'full_name': '', 'papers': [], 'subject': '', 'body': ''})
+            studentsDataWithPapers = defaultdict(lambda: {'email_address': '', 'first_name': '', 'full_name': '', 'papers': [], 'subject': '', 'email_body': ''})
 
             for studentId, surname, fullname, email in students:
-                studentsDataWithPapers[studentId]['email'] = email
+                studentsDataWithPapers[studentId]['email_address'] = email
                 studentsDataWithPapers[studentId]['first_name'] = surname
                 studentsDataWithPapers[studentId]['full_name'] = fullname
                 studentsDataWithPapers[studentId]['subject'] = subject
-                studentsDataWithPapers[studentId]['body'] = body
+                studentsDataWithPapers[studentId]['email_body'] = body
                 
-                for paperName, pdf_path in papers:
-                    if str(studentId) in paperName:        
-                        studentsDataWithPapers[studentId]['papers'].append(pdf_path)
+                for paper_name, paper_path in papers:
+                    if str(studentId) in paper_name:        
+                        studentsDataWithPapers[studentId]['papers'].append((paper_name, paper_path))
 
             return studentsDataWithPapers
         

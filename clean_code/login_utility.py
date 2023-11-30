@@ -52,15 +52,15 @@ class LoginUtility(customtkinter.CTkToplevel):
         
         try:    
             import smtplib 
-            email_server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-            email_server.ehlo()
-            email_server.starttls()  # Enable encryption for secure connection
-            email_server.ehlo()
+            mailer = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            mailer.ehlo()
+            mailer.starttls()  # Enable encryption for secure connection
+            mailer.ehlo()
 
-            email_server.login(session_email_address, session_password)
+            mailer.login(session_email_address, session_password)
             
             self.master.session_email_address = session_email_address
-            self.master.email_server = email_server
+            self.master.mailer = mailer
             self.master.session_started = True
             self.destroy()
         except Exception as exception:
