@@ -2,7 +2,7 @@ import customtkinter
 from tkinter import messagebox
 
 FONT_FAMILY        = "Cascadia Mono"
-SMTP_SERVER = "smtp.titan.email"
+SMTP_SERVER = "smtp.titan.email" 
 SMTP_PORT = 587
 
 class LoginUtility(customtkinter.CTkToplevel):
@@ -41,7 +41,7 @@ class LoginUtility(customtkinter.CTkToplevel):
         self.logInButton.configure(state="disabled")
         emailAddress = self.usernameField.get()
         password = self.passwordField.get()
-            
+        
         try:    
             import smtplib 
             server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)

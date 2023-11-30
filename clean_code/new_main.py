@@ -4,8 +4,8 @@ from welcom_screen import WelcomeScreen
 from emails_utility import EmailsUtility
 from results_utility import ResultsUtility
 
-customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
-# customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
+# customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
+customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("green")  # Themes: blue (default), dark-blue, green
 
 SCREEN_SIZE = (1080, 500)
@@ -35,11 +35,8 @@ class App(customtkinter.CTk):
         print('navigateToResultsUtility - main(app)')
         
         current.destroy()
-        # self.resultsUtility = ResultsUtility(self)
-        # self.resultsUtility.grid(row=0, column=0, sticky="nsew")
-        self.withdraw()
-        self.resultsUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
-        self.deiconify()
+        self.resultsUtility = ResultsUtility(self)
+        self.resultsUtility.grid(row=0, column=0, sticky="nsew")
 
     def navigateToJoiningInstructionsUitlity(self, current):
         print('navigateToJoiningInstructionsUitlity - main(app)')
@@ -57,13 +54,12 @@ class App(customtkinter.CTk):
         self.welcomScreen.grid(row=0, column=0, sticky="nsew")
 
     def navigateToEmailSenderUtility(self, data):
-        def disable_event():
-            return 
+        
         self.withdraw()
-
-        self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
-        # self.emailsUtility = EmailsUtility(self, SCREEN_SIZE)
+        # self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
+        self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.sessionEmailAddress, self.sessionPassword, data)
         self.deiconify()
+        
 
 
 
