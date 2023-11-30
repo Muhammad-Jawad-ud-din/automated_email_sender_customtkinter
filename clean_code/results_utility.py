@@ -63,7 +63,7 @@ class LeftSideBar(customtkinter.CTkFrame):
                     PDFS_LIST.append((file, os.path.join(os.path.abspath(root), file)))
         
         if len(PDFS_LIST) == 0:
-            messagebox.showerror(title="Failed", message=f"No PDFs Found In The Selected Folder {root}")
+            messagebox.showerror(parent=self, title="Failed", message=f"No PDFs Found In The Selected Folder {root}")
             return
 
         PDFS_NAMES_LIST = [[file[0]] for file in PDFS_LIST]
@@ -72,13 +72,13 @@ class LeftSideBar(customtkinter.CTkFrame):
 
         self.loadPDFsBtn.configure(state='disabled')
         self.clearPDFsBtn.configure(state="normal")
-        messagebox.showinfo(title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
+        messagebox.showinfo(parent=self, title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
 
     def getSheetName(self, sheets):
         
         def loadSheet():
             if not comboBox.get() in sheets:
-                messagebox.showerror(title="Invalid", message="Invalid Sheet Name Provided, Please Select One from the list")
+                messagebox.showerror(parent=self, title="Invalid", message="Invalid Sheet Name Provided, Please Select One from the list")
             else:
                 self.sheetName = comboBox.get()
                 sheetsPopUpWindow.destroy()
@@ -110,29 +110,29 @@ class LeftSideBar(customtkinter.CTkFrame):
         def validateExcelData(df):
             # Check if the first column contains numeric values (ID)
             if not pandas.to_numeric(df.iloc[:, 0], errors='coerce').notnull().all():
-                messagebox.showerror(title="Invalid Student IDs", message="First column should contain only numeric values (ID).")
+                messagebox.showerror(parent=self, title="Invalid Student IDs", message="First column should contain only numeric values (ID).")
                 return False
 
             # Check if the fourth column contains valid email addresses
             if not df.iloc[:, 3].astype(str).str.contains('@').all():
-                messagebox.showerror(title="Invalid Email Addresses", message="Fourth column should contain valid email addresses.")
+                messagebox.showerror(parent=self, title="Invalid Email Addresses", message="Fourth column should contain valid email addresses.")
                 return False
 
             # validate the input excel file
             if df.isnull().values.any():
-                messagebox.showerror(title="Empty Cells", message="Empty, Null or Undefined values found in the excel, please provide clean data")
+                messagebox.showerror(parent=self, title="Empty Cells", message="Empty, Null or Undefined values found in the excel, please provide clean data")
                 return False
 
             # Check for duplicate IDs
             duplicate_ids = df[df.duplicated(df.columns[0], keep=False)]
             if not duplicate_ids.empty:
-                messagebox.showerror(title="Dupilcate IDs", message="Duplicate IDs found:")
+                messagebox.showerror(parent=self, title="Dupilcate IDs", message="Duplicate IDs found:")
                 return False
 
             # Check for duplicate email addresses
             duplicate_emails = df[df.duplicated(df.columns[3], keep=False)]
             if not duplicate_emails.empty:
-                messagebox.showerror(title="Duplicate Emails", message="Duplicate Email Addresses found:")
+                messagebox.showerror(parent=self, title="Duplicate Emails", message="Duplicate Email Addresses found:")
                 return False
 
             return True
@@ -165,7 +165,7 @@ class LeftSideBar(customtkinter.CTkFrame):
         # On call it should remove the table from the filesSideBar
         # Should disable the 'Clear PDFs' Button
         # Should enable the "Load PDFs" Button
-        status = messagebox.askyesno(title="Clear Students Data", message="Would You Like To Clear The Loaded Studnets Data?")
+        status = messagebox.askyesno(parent=self, title="Clear Students Data", message="Would You Like To Clear The Loaded Studnets Data?")
         if status: 
             self.studentsDataTable.destroy()
             self.clearStudentsBtn.configure(state="disabled")
@@ -175,7 +175,7 @@ class LeftSideBar(customtkinter.CTkFrame):
         # On call it should remove the table from the filesSideBar
         # Should disable the 'Clear PDFs' Button
         # Should enable the "Load PDFs" Button
-        status = messagebox.askyesno(title="Clear The Laaded PDFs", message="Would You Like To Clear The Loaded PDFs?")
+        status = messagebox.askyesno(parent=self, title="Clear The Laaded PDFs", message="Would You Like To Clear The Loaded PDFs?")
         if status: 
             self.filesTable.destroy()
             self.clearPDFsBtn.configure(state="disabled")
@@ -183,7 +183,7 @@ class LeftSideBar(customtkinter.CTkFrame):
             PDFS_LIST = []
 
     def navigateToWelcomScreen(self):
-        status = messagebox.askokcancel(title="You Sure?", message="Are You Sure to Proceed? Data on This Tab will be lost")
+        status = messagebox.askokcancel(parent=self, title="You Sure?", message="Are You Sure to Proceed? Data on This Tab will be lost")
         if status:
             self.master.navigateToWelcomScreen()
 
@@ -251,7 +251,7 @@ class BottomButtonsBar(customtkinter.CTkFrame):
 
             return studentsDataWithPapers
         
-        status = messagebox.askyesno(title="Send Emails?", message="Are You Sure To Proceed To Sender? Did You Double Check The Subject/Body/PDFs/Students Data?")
+        status = messagebox.askyesno(parent=self, title="Send Emails?", message="Are You Sure To Proceed To Sender? Did You Double Check The Subject/Body/PDFs/Students Data?")
         if status:
             global PDFS_LIST
             global STUDENTS_LIST
@@ -265,16 +265,16 @@ class BottomButtonsBar(customtkinter.CTkFrame):
             EMAIL_BODY_TEXT = self.master.middleFrame.bodyTextBox.get("0.0", "end-1c")
             
             if len(PDFS_LIST) == 0:
-                messagebox.showerror(title='Missing PDFs', message='Missing PDFs, make suer valid list of pdfs is loaded')
+                messagebox.showerror(parent=self, title='Missing PDFs', message='Missing PDFs, make suer valid list of pdfs is loaded')
                 return
             elif len(STUDENTS_LIST) == 0: 
-                messagebox.showerror(title='Missing Students Data', message='Missing Students Data, make suer valid list of students is loaded')
+                messagebox.showerror(parent=self, title='Missing Students Data', message='Missing Students Data, make suer valid list of students is loaded')
                 return
             elif len(EMAIL_SUBJECT_TEXT) == 0:
-                messagebox.showerror(title='Missing Email Subject Text', message='Please Pate a Valid email subject in the subject area')
+                messagebox.showerror(parent=self, title='Missing Email Subject Text', message='Please Pate a Valid email subject in the subject area')
                 return
             elif len(EMAIL_BODY_TEXT) == 0:
-                messagebox.showerror(title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
+                messagebox.showerror(parent=self, title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
                 return
             
             formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
@@ -287,7 +287,7 @@ class BottomButtonsBar(customtkinter.CTkFrame):
                     missingPaper = True
 
             if missingPaper:
-                messagebox.showerror(title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
+                messagebox.showerror(parent=self, title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
                 return
             
             print("Calling the master navigateToEmailSenderUtility")

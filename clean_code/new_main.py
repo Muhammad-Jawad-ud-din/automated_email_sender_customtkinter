@@ -20,8 +20,9 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        self.sessionEmailAddress = ''
-        self.sessionPassword = ''
+        self.session_email_address = ''
+        # self.session_password = ''
+        self.email_server = '' 
 
         self.welcomScreen = WelcomeScreen(self)
         self.welcomScreen.grid(row=0, column=0, sticky="nsew")
@@ -56,12 +57,10 @@ class App(customtkinter.CTk):
     def navigateToEmailSenderUtility(self, data):
         
         self.withdraw()
-        # self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
-        self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.sessionEmailAddress, self.sessionPassword, data)
+        self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
+        self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.email_server, self.session_email_address, data)
         self.deiconify()
         
-
-
 
 if __name__ == "__main__":
     app = App("Automated Emailer", SCREEN_SIZE)

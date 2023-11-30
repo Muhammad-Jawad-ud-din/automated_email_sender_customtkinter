@@ -1,20 +1,23 @@
 import customtkinter
-
+import time
 from tkinter import messagebox
 from CTkScrollableTable import CTkScrollableTable
 from CTkXYScrollableFrame import CTkXYScrollableFrame
 
 FONT_FAMILY        = "Cascadia Mono"
+SMTP_SERVER = "smtp.titan.email" 
+SMTP_PORT = 587
 
 class EmailsUtility(customtkinter.CTkToplevel):
-    def __init__(self, master, size, email_address, password, data, **kwargs):
+    def __init__(self, master, size, email_server, session_email_address, data, **kwargs):
         super().__init__(master, **kwargs)
 
         self.master = master 
         self.geometry(f"{size[0]}x{size[1]}")
         self.data = data 
-        self.email_address = email_address
-        self.password = password
+        self.session_email_address = session_email_address
+        # self.session_password = session_password
+        self.email_server = email_server
 
         self.grid_rowconfigure(0, weight=4)
         self.grid_rowconfigure((1,2), weight=1)
@@ -27,13 +30,16 @@ class EmailsUtility(customtkinter.CTkToplevel):
 
         # Middle ProgressBar
         self.progress_bar = customtkinter.CTkProgressBar(self, mode="determinate")
+        self.progress_bar.set(0)
 
         # Bottom Abort Button
         self.abort_process_btn = customtkinter.CTkButton(self, text="Abort Process", hover_color="red", font=self.button_font, command=self.abort_process_handler)
+        self.start_process_btn = customtkinter.CTkButton(self, text="Start Process", font=self.button_font, command=self.send_emails_to_students)
 
         self.tabular_view.grid(row=0, column=0, padx=50, pady=(20, 10), sticky="nsew")
         self.progress_bar.grid(row=1, column=0, padx=50, pady=10, sticky="ew")
-        self.abort_process_btn.grid(row=2, column=0, padx=50, pady=(10, 20), sticky="nse")
+        self.abort_process_btn.grid(row=2, column=0, padx=250, pady=(10, 20), sticky="nse")
+        self.start_process_btn.grid(row=2, column=0, padx=50, pady=(10, 20), sticky="nse")
 
         self.load_data_in_table()
         self.master.wait_window(self)
@@ -62,9 +68,30 @@ class EmailsUtility(customtkinter.CTkToplevel):
 
 
     def abort_process_handler(self):
-        messagebox.askokcancel(title="Abort the current progress", message="Would you like to abort the current process?")
-        self.destroy()
+        status = messagebox.askyesno(parent=self, title="Abort the current progress", message="Would you like to abort the current process?")
+        if status:
+            self.destroy()
 
+    def send_emails_to_students(self):
+        data = self.data
+        self.progress_bar.set(0)
+        self.start_process_btn.configure(state='disabled')
+        
+        total_length = len(data)
+        step = 0
+        delete_index = 1
+        for student_id, student_details in data.items():
+            try:                
+                self.email_server.sendmail(self.session_email_address, 'someemailaddress@someserver.com', f'{student_details}')
+                self.students_table.delete_row(delete_index)
+                
+                time.sleep(4)
 
+            except Exception as e: 
+                delete_index += 1
+                messagebox.showerror(parent=self, title='Email Failed', message=f"Failed to send email to {student_id}")
+            
+            self.progress_bar.set(step + 1/total_length)
+            step = step + 1/total_length
 
-
+        messagebox.showinfo(parent=self, title='Proceess Completed', message="Emails failed for remaining students on list (if any)")            
