@@ -28,38 +28,43 @@ class LoginUtility(customtkinter.CTkToplevel):
         self.logInFrame.grid_columnconfigure(0, weight=1)
 
 
-        self.usernameField = customtkinter.CTkEntry(self.logInFrame, placeholder_text="Email Address", font=self.font)
-        self.passwordField = customtkinter.CTkEntry(self.logInFrame, placeholder_text="Password", show="*", font=self.font)
-        self.logInButton = customtkinter.CTkButton(self.logInFrame, text="Log In", font=self.font, command=self.logInButtonHandler)
+        self.email_address_field = customtkinter.CTkEntry(self.logInFrame, placeholder_text="Email Address", font=self.font)
+        self.password_field = customtkinter.CTkEntry(self.logInFrame, placeholder_text="Password", show="*", font=self.font)
+        self.login_button = customtkinter.CTkButton(self.logInFrame, text="Log In", font=self.font, command=self.login_button_handler)
 
-        self.usernameField.grid(row=0, column=0, padx=30, pady=(10,5), sticky="ew")
-        self.passwordField.grid(row=1, column=0, padx=30, pady=(0, 5), sticky="ew")
-        self.logInButton.grid(row=2, column=0, padx=80, sticky="ew")
+        self.email_address_field.grid(row=0, column=0, padx=30, pady=(10,5), sticky="ew")
+        self.password_field.grid(row=1, column=0, padx=30, pady=(0, 5), sticky="ew")
+        self.login_button.grid(row=2, column=0, padx=80, sticky="ew")
 
         self.master.wait_window(self)
 
-    def logInButtonHandler(self):
+    def login_button_handler(self):
         login_thread = Thread(target=self.login_thread_target)
         login_thread.start()
 
     def login_thread_target(self):
-        self.logInButton.configure(state="disabled")
-        emailAddress = self.usernameField.get()
-        password = self.passwordField.get()
+        self.login_button.configure(state="disabled")
+        self.email_address_field.configure(state="disabled")
+        self.password_field.configure(state="disabled")
+
+        session_email_address = self.email_address_field.get()
+        session_password = self.password_field.get()
         
         try:    
             import smtplib 
-            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-            server.ehlo()
-            server.starttls()  # Enable encryption for secure connection
-            server.ehlo()
+            email_server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            email_server.ehlo()
+            email_server.starttls()  # Enable encryption for secure connection
+            email_server.ehlo()
 
-            server.login(emailAddress, password)
+            email_server.login(session_email_address, session_password)
             
-            self.master.session_email_address = emailAddress
-            self.master.email_server = server
+            self.master.session_email_address = session_email_address
+            self.master.email_server = email_server
             self.master.session_started = True
             self.destroy()
         except Exception as exception:
             messagebox.showerror(parent=self, title='LogIn Failed', message=f"{exception}")
-            self.logInButton.configure(state="normal")
+            self.login_button.configure(state="disabled")
+            self.email_address_field.configure(state="disabled")
+            self.password_field.configure(state="disabled")

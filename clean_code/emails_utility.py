@@ -99,3 +99,5 @@ class EmailsUtility(customtkinter.CTkToplevel):
 
         messagebox.showinfo(parent=self, title='Proceess Completed', message="Emails failed for remaining students on list (if any)")
 
+    def create_email_template_for_student(self, student):
+        pass
