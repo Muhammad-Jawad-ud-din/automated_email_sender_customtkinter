@@ -43,7 +43,7 @@ class LeftSideBar(customtkinter.CTkFrame):
         self.loadExcelBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Load Students", command=self.loadStudentsData)
         self.clearStudentsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Clear Students", state="disabled", hover_color="red", command=self.clearStudentsData)
 
-        self.backBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Home Screen", command=self.navigateToWelcomScreen)
+        self.backBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Home Screen", hover_color="red", command=self.navigateToWelcomScreen)
 
         self.loadPDFsBtn.grid(row=0, column=0)
         self.clearPDFsBtn.grid(row=1, column=0)

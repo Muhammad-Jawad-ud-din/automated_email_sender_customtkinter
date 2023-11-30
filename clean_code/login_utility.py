@@ -52,8 +52,8 @@ class LoginUtility(customtkinter.CTkToplevel):
             server.login(emailAddress, password)
             
             self.master.session_email_address = emailAddress
-            # self.master.session_password = password
             self.master.email_server = server
+            self.master.session_started = True
             self.destroy()
         except Exception as exception:
             messagebox.showerror(parent=self, title='LogIn Failed', message=f"{exception}")

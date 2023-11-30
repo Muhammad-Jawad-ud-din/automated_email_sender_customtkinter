@@ -1,4 +1,5 @@
 import customtkinter
+from tkinter import messagebox
 from login_utility import LoginUtility
 from welcom_screen import WelcomeScreen
 from emails_utility import EmailsUtility
@@ -21,8 +22,8 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         self.session_email_address = ''
-        # self.session_password = ''
         self.email_server = '' 
+        self.session_started = False
 
         self.welcomScreen = WelcomeScreen(self)
         self.welcomScreen.grid(row=0, column=0, sticky="nsew")
@@ -58,7 +59,10 @@ class App(customtkinter.CTk):
         
         self.withdraw()
         self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
-        self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.email_server, self.session_email_address, data)
+        if self.session_started:
+            self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.email_server, self.session_email_address, data)
+        else: 
+            messagebox.showwarning(parent=self, title="Log In Failed", message="Couldn't Proceed Further...")
         self.deiconify()
         
 
