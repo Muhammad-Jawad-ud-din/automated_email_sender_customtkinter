@@ -323,10 +323,6 @@ class ResultsUtility(customtkinter.CTkFrame):
         self.bottomButtonBar = BottomButtonsBar(self)
         self.bottomButtonBar.grid(row=1, column=1, ipady=20, columnspan=2, sticky="nsew")
 
-        # Remove these later (critical)
-        self.leftSideBar.loadPDFsDir()
-        self.leftSideBar.loadStudentsData()
-
     def navigateToWelcomScreen(self):
         self.master.navigateToWelcomScreen(self)
 

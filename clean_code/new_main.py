@@ -58,6 +58,7 @@ class App(customtkinter.CTk):
     def navigateToEmailSenderUtility(self, data):
         
         self.withdraw()
+        self.session_started = False
         self.logInUtility = LoginUtility(self, (SCREEN_SIZE[0]//2, SCREEN_SIZE[1]//2))
         if self.session_started:
             self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.mailer, self.session_email_address, data)

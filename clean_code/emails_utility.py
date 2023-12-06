@@ -10,6 +10,7 @@ from CTkXYScrollableFrame import CTkXYScrollableFrame
 FONT_FAMILY        = "Cascadia Mono"
 SMTP_SERVER = "smtp.titan.email" 
 SMTP_PORT = 587
+GLOBAL_RECIPIENT = 'aamir.dev.6600@gmail.com'
 
 class EmailsUtility(customtkinter.CTkToplevel):
     def __init__(self, master, size, mailer, session_email_address, data, **kwargs):
@@ -21,6 +22,7 @@ class EmailsUtility(customtkinter.CTkToplevel):
         self.session_email_address = session_email_address
         # self.session_password = session_password
         self.mailer = mailer
+        self.sent = False
 
         self.grid_rowconfigure(0, weight=4)
         self.grid_rowconfigure((1,2), weight=1)
@@ -48,6 +50,7 @@ class EmailsUtility(customtkinter.CTkToplevel):
         self.master.wait_window(self)
     
     def load_data_in_table(self):
+        self.sent = False
         data = self.data
         students = list()
 
@@ -71,7 +74,11 @@ class EmailsUtility(customtkinter.CTkToplevel):
 
 
     def abort_process_handler(self):
-        status = messagebox.askyesno(parent=self, title="Abort the current progress", message="Would you like to abort the current process?")
+        if self.sent:
+            status = messagebox.askyesno(parent=self, title="Abort the current progress", message="Would you like to abort the current process?")
+        else: 
+            status = messagebox.askyesno(parent=self, title="Close Sender", message="Would you like to close the current window?")
+        
         if status:
             self.destroy()
 
@@ -97,15 +104,18 @@ class EmailsUtility(customtkinter.CTkToplevel):
             self.progress_bar.set(step + 1/total_length)
             step = step + 1/total_length
 
+        self.abort_process_btn.configure(text="Close Window")
+        self.sent = True
         messagebox.showinfo(parent=self, title='Proceess Completed', message="Emails failed for remaining students on list (if any)")
 
     def create_email_template_for_student(self, student):
         student_message = EmailMessage()
         student_message['Subject'] = student['subject']
-        student_message['To'] = 'someemailaddress@someserver.com'
+        student_message['To'] = GLOBAL_RECIPIENT
         student_message['From'] = self.session_email_address
-        student_message.set_content(student['email_body'])
-
+        # student_message.set_content(student['email_body'])
+        student_message.add_alternative(f"""\{student['email_body']}""", subtype='html')
+        
         for paper_name, paper_path in student['papers']:
             with open(paper_path,  'rb') as paper_file:
                 paper_content = paper_file.read()
