@@ -6,8 +6,8 @@ import customtkinter
 from tkinter import messagebox
 from tkinter import filedialog
 from collections import defaultdict
-from CTkScrollableTable import CTkScrollableTable
-from CTkXYScrollableFrame import CTkXYScrollableFrame
+from ctk_scrollable_table import CTkScrollableTable
+from ctk_scrollable_frame import CTkXYScrollableFrame
 
 
 PDFS_LIST          = list()

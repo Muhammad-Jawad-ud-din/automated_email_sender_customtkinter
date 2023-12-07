@@ -4,8 +4,8 @@ from threading import Thread
 from email.message import EmailMessage
 
 from tkinter import messagebox
-from CTkScrollableTable import CTkScrollableTable
-from CTkXYScrollableFrame import CTkXYScrollableFrame
+from ctk_scrollable_table import CTkScrollableTable
+from ctk_scrollable_frame import CTkXYScrollableFrame
 
 FONT_FAMILY        = "Cascadia Mono"
 SMTP_SERVER = "smtp.titan.email" 
