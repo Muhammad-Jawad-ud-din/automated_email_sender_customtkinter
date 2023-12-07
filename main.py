@@ -1,12 +1,13 @@
 import customtkinter
 from tkinter import messagebox
+
+from main_screen import WelcomeScreen
 from login_utility import LoginUtility
-from welcom_screen import WelcomeScreen
 from emails_utility import EmailsUtility
 from results_utility import ResultsUtility
 
-# customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
-customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
+customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
+# customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("green")  # Themes: blue (default), dark-blue, green
 
 SCREEN_SIZE = (1080, 500)
@@ -25,11 +26,8 @@ class App(customtkinter.CTk):
         self.mailer = '' 
         self.session_started = False
 
-        self.welcomScreen = WelcomeScreen(self)
-        self.welcomScreen.grid(row=0, column=0, sticky="nsew")
-
-        # self.resultsUtility = ResultsUtility(self)
-        # self.resultsUtility.grid(row=0, column=0, sticky="nsew")
+        self.main_screen = WelcomeScreen(self)
+        self.main_screen.grid(row=0, column=0, sticky="nsew")
 
         self.mainloop()
 
@@ -52,8 +50,8 @@ class App(customtkinter.CTk):
         print(f"navigateToWelcomScreen from {current} - main(app)")
         
         current.destroy()
-        self.welcomScreen = WelcomeScreen(self)
-        self.welcomScreen.grid(row=0, column=0, sticky="nsew")
+        self.main_screen = WelcomeScreen(self)
+        self.main_screen.grid(row=0, column=0, sticky="nsew")
 
     def navigateToEmailSenderUtility(self, data):
         

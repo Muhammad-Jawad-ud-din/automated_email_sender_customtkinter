@@ -23,20 +23,20 @@ class WelcomeScreen(customtkinter.CTkFrame):
         self.buttonsFrame = customtkinter.CTkFrame(self)
 
         self.buttonsFrame.grid_rowconfigure(0, weight=1)
-        self.buttonsFrame.grid_columnconfigure((0,1), weight=1)
+        self.buttonsFrame.grid_columnconfigure(0, weight=1)
 
         self.multiFilesSender = customtkinter.CTkButton(self.buttonsFrame, text="Students Results Utility", font=self.buttonsFont   , command=self.navigateToResultsUtility)
-        self.singleFileSender = customtkinter.CTkButton(self.buttonsFrame, text="Joining Intructions Utility", font=self.buttonsFont, command=self.navigateToJoiningInstructionsUitlity)
+        # self.singleFileSender = customtkinter.CTkButton(self.buttonsFrame, text="Joining Intructions Utility", font=self.buttonsFont, command=self.navigateToJoiningInstructionsUitlity)
         
         self.headerLable.grid(row=0, column=0, pady=(20, 0), stick="nsew")
         self.descriptionText.grid(row=1, column=0, stick="nsew")
         self.buttonsFrame.grid(row=2, column=0, padx=20, pady=20, stick="nsew")
         
-        self.multiFilesSender.grid(row=0, column=0, padx=40, pady=40, sticky="nsew")
-        self.singleFileSender.grid(row=0, column=1, padx=40, pady=40, sticky="nsew")
+        self.multiFilesSender.grid(row=0, column=0, padx=200, pady=40, sticky="nsew")
+        # self.singleFileSender.grid(row=0, column=1, padx=40, pady=40, sticky="nsew")
 
     def navigateToResultsUtility(self):
         self.master.navigateToResultsUtility(self)
     
-    def navigateToJoiningInstructionsUitlity(self):
-        self.master.navigateToJoiningInstructionsUitlity(self)
+    # def navigateToJoiningInstructionsUitlity(self):
+    #     self.master.navigateToJoiningInstructionsUitlity(self)
