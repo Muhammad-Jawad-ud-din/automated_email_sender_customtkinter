@@ -38,16 +38,16 @@ class App(customtkinter.CTk):
         self.resultsUtility = ResultsUtility(self)
         self.resultsUtility.grid(row=0, column=0, sticky="nsew")
 
-    def navigateToJoiningInstructionsUitlity(self, current):
-        print('navigateToJoiningInstructionsUitlity - main(app)')
+    # def navigateToJoiningInstructionsUitlity(self, current):
+    #     print('navigateToJoiningInstructionsUitlity - main(app)')
         
-        current.destroy()
+    #     current.destroy()
         # self.joiningInstructionsUtility = JoiningInstUtility(self)
         # self.joiningInstructionsUtility.grid(row=0, column=0, sticky="nsew")
 
         
-    def navigateToWelcomScreen(self, current):
-        print(f"navigateToWelcomScreen from {current} - main(app)")
+    def navigateToMainScreen(self, current):
+        print(f"navigateToMainScreen from {current} - main(app)")
         
         current.destroy()
         self.main_screen = WelcomeScreen(self)

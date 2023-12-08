@@ -9,9 +9,15 @@ SMTP_PORT = 587
 class LoginUtility(customtkinter.CTkToplevel):
     def __init__(self, master, size, **kwargs):
         super().__init__(master, **kwargs)
-
+        
+        def disable_close_event():
+            return
+        
         self.master = master 
         self.geometry(f"{size[0]}x{size[1]}")
+        self.resizable(False, False)
+        self.protocol("WM_DELETE_WINDOW", disable_close_event)   # DISABLE THE CLOSE BUTTON
+        
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=10)
         self.grid_columnconfigure(0, weight=1)
@@ -63,6 +69,7 @@ class LoginUtility(customtkinter.CTkToplevel):
             self.master.mailer = mailer
             self.master.session_started = True
             self.destroy()
+
         except Exception as exception:
             messagebox.showerror(parent=self, title='LogIn Failed', message=f"{exception}")
             self.login_button.configure(state="disabled")

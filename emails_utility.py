@@ -16,8 +16,14 @@ class EmailsUtility(customtkinter.CTkToplevel):
     def __init__(self, master, size, mailer, session_email_address, data, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.master = master 
+        def disable_close_event():
+            return
+
         self.geometry(f"{size[0]}x{size[1]}")
+        self.protocol("WM_DELETE_WINDOW", disable_close_event)   # DISABLE THE CLOSE BUTTON
+        self.resizable(False, False)
+
+        self.master = master 
         self.data = data 
         self.session_email_address = session_email_address
         # self.session_password = session_password
@@ -38,12 +44,12 @@ class EmailsUtility(customtkinter.CTkToplevel):
         self.progress_bar.set(0)
 
         # Bottom Abort Button
-        self.abort_process_btn = customtkinter.CTkButton(self, text="Abort Process", hover_color="red", font=self.button_font, command=self.abort_process_handler)
+        self.abort_process_btn = customtkinter.CTkButton(self, text="Close Window", hover_color="red", font=self.button_font, command=self.abort_process_handler)
         self.start_process_btn = customtkinter.CTkButton(self, text="Start Process", font=self.button_font, command=self.send_emails_to_students)
 
         self.tabular_view.grid(row=0, column=0, padx=50, pady=(20, 10), sticky="nsew")
         self.progress_bar.grid(row=1, column=0, padx=50, pady=10, sticky="ew")
-        self.abort_process_btn.grid(row=2, column=0, padx=250, pady=(10, 20), sticky="nse")
+        self.abort_process_btn.grid(row=2, column=0, padx=200, pady=(10, 20), sticky="nse")
         self.start_process_btn.grid(row=2, column=0, padx=50, pady=(10, 20), sticky="nse")
 
         self.load_data_in_table()
@@ -87,6 +93,7 @@ class EmailsUtility(customtkinter.CTkToplevel):
         sender_thread.start()
 
     def sender_thread_target(self):
+        self.abort_process_btn.configure(text="Abort Sending")
         self.start_process_btn.configure(state='disabled')
         data = self.data
         total_length = len(data)
@@ -113,8 +120,8 @@ class EmailsUtility(customtkinter.CTkToplevel):
         student_message['Subject'] = student['subject']
         student_message['To'] = GLOBAL_RECIPIENT
         student_message['From'] = self.session_email_address
-        # student_message.set_content(student['email_body'])
-        student_message.add_alternative(f"""\{student['email_body']}""", subtype='html')
+        student_message.set_content(student['email_body'])
+        # student_message.add_alternative(f"""\{student['email_body']}""", subtype='html')
         
         for paper_name, paper_path in student['papers']:
             with open(paper_path,  'rb') as paper_file:

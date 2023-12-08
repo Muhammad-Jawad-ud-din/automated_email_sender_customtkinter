@@ -43,7 +43,7 @@ class LeftSideBar(customtkinter.CTkFrame):
         self.loadExcelBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Load Students", command=self.loadStudentsData)
         self.clearStudentsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Clear Students", state="disabled", hover_color="red", command=self.clearStudentsData)
 
-        self.backBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Home Screen", hover_color="red", command=self.navigateToWelcomScreen)
+        self.backBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Home Screen", hover_color="red", command=self.navigateToMainScreen)
 
         self.loadPDFsBtn.grid(row=0, column=0)
         self.clearPDFsBtn.grid(row=1, column=0)
@@ -55,25 +55,31 @@ class LeftSideBar(customtkinter.CTkFrame):
 
     def loadPDFsDir(self):
         global PDFS_LIST
-
-        directorypath = filedialog.askdirectory()
-        for root, dirs, files in os.walk(directorypath):
-            for file in files: 
-                if file.endswith('.pdf'):
-                    PDFS_LIST.append((file, os.path.join(os.path.abspath(root), file)))
         
-        if len(PDFS_LIST) == 0:
-            messagebox.showerror(parent=self, title="Failed", message=f"No PDFs Found In The Selected Folder {root}")
-            return
+        try: 
+            directorypath = filedialog.askdirectory()
+            if (not directorypath):
+                return
+        
+            for root, dirs, files in os.walk(directorypath):
+                for file in files: 
+                    if file.endswith('.pdf'):
+                        PDFS_LIST.append((file, os.path.join(os.path.abspath(root), file)))
 
-        PDFS_NAMES_LIST = [[file[0]] for file in PDFS_LIST]
-        self.filesTable = CTkScrollableTable(self.pdfFilesFrame, row=len(PDFS_NAMES_LIST), column=1, values=PDFS_NAMES_LIST)
-        self.filesTable.pack()
+            if len(PDFS_LIST) == 0:
+                messagebox.showerror(parent=self, title="Failed", message=f"No PDFs Found In The Selected Folder {root}")
+                return
 
-        self.loadPDFsBtn.configure(state='disabled')
-        self.clearPDFsBtn.configure(state="normal")
-        messagebox.showinfo(parent=self, title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
-        print(PDFS_LIST)
+            PDFS_NAMES_LIST = [[file[0]] for file in PDFS_LIST]
+            self.filesTable = CTkScrollableTable(self.pdfFilesFrame, row=len(PDFS_NAMES_LIST), column=1, values=PDFS_NAMES_LIST)
+            self.filesTable.pack()
+            self.loadPDFsBtn.configure(state='disabled')
+            self.clearPDFsBtn.configure(state="normal")
+            messagebox.showinfo(parent=self, title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
+
+        except Exception as exception:
+            messagebox.showerror(title="Runtime Error", message="Something went wrong in runtime")
+        
     def getSheetName(self, sheets):
         
         def loadSheet():
@@ -87,7 +93,8 @@ class LeftSideBar(customtkinter.CTkFrame):
             return
         
         sheetsPopUpWindow = customtkinter.CTkToplevel()
-        sheetsPopUpWindow.protocol("WM_DELETE_WINDOW", disable_event)
+        sheetsPopUpWindow.resizable(False, False)
+        sheetsPopUpWindow.protocol("WM_DELETE_WINDOW", disable_event)   # DISABLE THE CLOSE BUTTON
         sheetsPopUpWindow.grid_rowconfigure((0, 1, 2), weight=1)
         sheetsPopUpWindow.grid_columnconfigure(0, weight=1)
 
@@ -137,56 +144,69 @@ class LeftSideBar(customtkinter.CTkFrame):
 
             return True
 
-        file = filedialog.askopenfile(filetypes=[("Excel files", ".xlsx .xls")])
-        excelFile = pandas.ExcelFile(file.name)
-        
-        self.main.withdraw()
-        self.sheetName = ''
-        self.getSheetName(excelFile.sheet_names)
-        self.main.deiconify()
+        try: 
+            file = filedialog.askopenfile(filetypes=[("Excel files", ".xlsx .xls")])
+            if (not file):
+                return
+            excelFile = pandas.ExcelFile(file.name)
 
-        excelDataFrame = pandas.read_excel(file.name, self.sheetName)
-        if validateExcelData(excelDataFrame):
-            STUDENT_DATA_FRAME = excelDataFrame.copy()
-            STUDENTS_LIST = excelDataFrame.to_numpy()
+            self.main.withdraw()
+            self.sheetName = ''
+            self.getSheetName(excelFile.sheet_names)
+            self.main.deiconify()
 
-            columns = excelDataFrame.columns.values.tolist()
-            studentsList = numpy.insert(STUDENTS_LIST, 0, columns, axis=0).tolist()
+            excelDataFrame = pandas.read_excel(file.name, self.sheetName)
+            if validateExcelData(excelDataFrame):
+                STUDENT_DATA_FRAME = excelDataFrame.copy()
+                STUDENTS_LIST = excelDataFrame.to_numpy()
 
-            self.studentsDataTable = CTkScrollableTable(master=self.studentsDataFrame, row=len(studentsList), column=len(studentsList[0]), values=studentsList)
-            self.studentsDataTable.pack()
+                columns = excelDataFrame.columns.values.tolist()
+                studentsList = numpy.insert(STUDENTS_LIST, 0, columns, axis=0).tolist()
 
-            self.loadExcelBtn.configure(state="disabled")
-            self.clearStudentsBtn.configure(state="normal")
+                self.studentsDataTable = CTkScrollableTable(master=self.studentsDataFrame, row=len(studentsList), column=len(studentsList[0]), values=studentsList)
+                self.studentsDataTable.pack()
 
-            messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
+                self.loadExcelBtn.configure(state="disabled")
+                self.clearStudentsBtn.configure(state="normal")
+
+                messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
+        except Exception as exception:
+            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
 
 
     def clearStudentsData(self):
         # On call it should remove the table from the filesSideBar
         # Should disable the 'Clear PDFs' Button
         # Should enable the "Load PDFs" Button
-        status = messagebox.askyesno(parent=self, title="Clear Students Data", message="Would You Like To Clear The Loaded Studnets Data?")
-        if status: 
-            self.studentsDataTable.destroy()
-            self.clearStudentsBtn.configure(state="disabled")
-            self.loadExcelBtn.configure(state="normal")
+        try: 
+            status = messagebox.askyesno(parent=self, title="Clear Students Data", message="Would You Like To Clear The Loaded Studnets Data?")
+            if status: 
+                self.studentsDataTable.destroy()
+                self.clearStudentsBtn.configure(state="disabled")
+                self.loadExcelBtn.configure(state="normal")
+        except Exception as exception:
+            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
     
+
     def clearPDFsDir(self): 
         # On call it should remove the table from the filesSideBar
         # Should disable the 'Clear PDFs' Button
         # Should enable the "Load PDFs" Button
-        status = messagebox.askyesno(parent=self, title="Clear The Laaded PDFs", message="Would You Like To Clear The Loaded PDFs?")
-        if status: 
-            self.filesTable.destroy()
-            self.clearPDFsBtn.configure(state="disabled")
-            self.loadPDFsBtn.configure(state="normal")
-            PDFS_LIST = []
+        try: 
+            status = messagebox.askyesno(parent=self, title="Clear The Laaded PDFs", message="Would You Like To Clear The Loaded PDFs?")
+            if status: 
+                self.filesTable.destroy()
+                self.clearPDFsBtn.configure(state="disabled")
+                self.loadPDFsBtn.configure(state="normal")
+                PDFS_LIST = []
+        except: 
+            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
 
-    def navigateToWelcomScreen(self):
+
+    def navigateToMainScreen(self):
         status = messagebox.askokcancel(parent=self, title="You Sure?", message="Are You Sure to Proceed? Data on This Tab will be lost")
         if status:
-            self.master.navigateToWelcomScreen()
+            self.master.navigateToMainScreen()
 
 class MiddleFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -251,48 +271,52 @@ class BottomButtonsBar(customtkinter.CTkFrame):
                         studentsDataWithPapers[studentId]['papers'].append((paper_name, paper_path))
 
             return studentsDataWithPapers
-        
-        status = messagebox.askyesno(parent=self, title="Send Emails?", message="Are You Sure To Proceed To Sender? Did You Double Check The Subject/Body/PDFs/Students Data?")
-        if status:
-            global PDFS_LIST
-            global STUDENTS_LIST
-            global EMAIL_SUBJECT_TEXT 
-            global EMAIL_BODY_TEXT 
 
-            # PDFS_NAMES_LIST
-            # Studnets Data
-            # Subject & Body
-            EMAIL_SUBJECT_TEXT = self.master.middleFrame.subjectTextBox.get("0.0", "end-1c")
-            EMAIL_BODY_TEXT = self.master.middleFrame.bodyTextBox.get("0.0", "end-1c")
-            
-            if len(PDFS_LIST) == 0:
-                messagebox.showerror(parent=self, title='Missing PDFs', message='Missing PDFs, make suer valid list of pdfs is loaded')
-                return
-            elif len(STUDENTS_LIST) == 0: 
-                messagebox.showerror(parent=self, title='Missing Students Data', message='Missing Students Data, make suer valid list of students is loaded')
-                return
-            elif len(EMAIL_SUBJECT_TEXT) == 0:
-                messagebox.showerror(parent=self, title='Missing Email Subject Text', message='Please Pate a Valid email subject in the subject area')
-                return
-            elif len(EMAIL_BODY_TEXT) == 0:
-                messagebox.showerror(parent=self, title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
-                return
-            
-            formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
-            studentsWithMissingPapers = []
-            missingPaper = False
+        try:    
+            status = messagebox.askyesno(parent=self, title="Send Emails?", message="Are You Sure To Proceed To Sender? Did You Double Check The Subject/Body/PDFs/Students Data?")
+            if status:
+                global PDFS_LIST
+                global STUDENTS_LIST
+                global EMAIL_SUBJECT_TEXT 
+                global EMAIL_BODY_TEXT 
 
-            for studnetId, data in formattedData.items():
-                if len(data['papers']) == 0:
-                    studentsWithMissingPapers.append(studnetId)
-                    missingPaper = True
+                # PDFS_NAMES_LIST
+                # Studnets Data
+                # Subject & Body
+                EMAIL_SUBJECT_TEXT = self.master.middleFrame.subjectTextBox.get("0.0", "end-1c")
+                EMAIL_BODY_TEXT = self.master.middleFrame.bodyTextBox.get("0.0", "end-1c")
+                
+                if len(PDFS_LIST) == 0:
+                    messagebox.showerror(parent=self, title='Missing PDFs', message='Missing PDFs, make suer valid list of pdfs is loaded')
+                    return
+                elif len(STUDENTS_LIST) == 0: 
+                    messagebox.showerror(parent=self, title='Missing Students Data', message='Missing Students Data, make suer valid list of students is loaded')
+                    return
+                elif len(EMAIL_SUBJECT_TEXT) == 0:
+                    messagebox.showerror(parent=self, title='Missing Email Subject Text', message='Please Pate a Valid email subject in the subject area')
+                    return
+                elif len(EMAIL_BODY_TEXT) == 0:
+                    messagebox.showerror(parent=self, title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
+                    return
+                
+                formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
+                studentsWithMissingPapers = []
+                missingPaper = False
 
-            if missingPaper:
-                messagebox.showerror(parent=self, title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
-                return
-            
-            print("Calling the master navigateToEmailSenderUtility")
-            self.master.navigateToEmailSenderUtility(formattedData)
+                for studnetId, data in formattedData.items():
+                    if len(data['papers']) == 0:
+                        studentsWithMissingPapers.append(studnetId)
+                        missingPaper = True
+
+                if missingPaper:
+                    messagebox.showerror(parent=self, title="Studnets With Missing Papers", message=f"Students with Ids: {studentsWithMissingPapers} have missing papers, aborting...")
+                    return
+                
+                print("Calling the master navigateToEmailSenderUtility")
+                self.master.navigateToEmailSenderUtility(formattedData)
+                
+        except Exception as exception:
+            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
 
 
 class ResultsUtility(customtkinter.CTkFrame):
@@ -323,8 +347,8 @@ class ResultsUtility(customtkinter.CTkFrame):
         self.bottomButtonBar = BottomButtonsBar(self)
         self.bottomButtonBar.grid(row=1, column=1, ipady=20, columnspan=2, sticky="nsew")
 
-    def navigateToWelcomScreen(self):
-        self.master.navigateToWelcomScreen(self)
+    def navigateToMainScreen(self):
+        self.master.navigateToMainScreen(self)
 
     def navigateToEmailSenderUtility(self, formattedData):
         # On hold the ResultsUtility
