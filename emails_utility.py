@@ -8,8 +8,10 @@ from ctk_scrollable_table import CTkScrollableTable
 from ctk_scrollable_frame import CTkXYScrollableFrame
 
 FONT_FAMILY        = "Cascadia Mono"
-SMTP_SERVER = "smtp.gmail.com" 
+SMTP_SERVER = "smtp.titan.email" 
 SMTP_PORT = 587
+GLOBAL_RECIPIENT = 'aamir.dev.6600@gmail.com'
+
 class EmailsUtility(customtkinter.CTkToplevel):
     def __init__(self, master, size, mailer, session_email_address, data, **kwargs):
         super().__init__(master, **kwargs)
@@ -116,7 +118,7 @@ class EmailsUtility(customtkinter.CTkToplevel):
     def create_email_template_for_student(self, student):
         student_message = EmailMessage()
         student_message['Subject'] = student['subject']
-        student_message['To'] = student['email_address']
+        student_message['To'] = GLOBAL_RECIPIENT
         student_message['From'] = self.session_email_address
         student_message.set_content(student['email_body'])
         # student_message.add_alternative(f"""\{student['email_body']}""", subtype='html')

@@ -3,7 +3,7 @@ from tkinter import messagebox
 from threading import Thread
 
 FONT_FAMILY        = "Cascadia Mono"
-SMTP_SERVER = "smtp.gmail.com" 
+SMTP_SERVER = "smtp.titan.email" 
 SMTP_PORT = 587
 
 class LoginUtility(customtkinter.CTkToplevel):
@@ -71,8 +71,7 @@ class LoginUtility(customtkinter.CTkToplevel):
             self.destroy()
 
         except Exception as exception:
-            print(exception)
             messagebox.showerror(parent=self, title='LogIn Failed', message=f"{exception}")
-            self.login_button.configure(state="normal")
-            self.email_address_field.configure(state="normal")
-            self.password_field.configure(state="normal")
+            self.login_button.configure(state="disabled")
+            self.email_address_field.configure(state="disabled")
+            self.password_field.configure(state="disabled")
