@@ -20,39 +20,44 @@ STUDENT_DATA_FRAME = ""
 
 class LeftSideBar(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        
-        self.pdfFilesFrame = master.pdfFilesFrame # PDFs are listed in this frame on load
-        self.studentsDataFrame = master.middleFrame.studentsDataFrame # Student Data From Excel is loaded here
-        self.master = master
-        self.main = master.master
+        try: 
+            super().__init__(master, **kwargs)
+            
+            self.pdfFilesFrame = master.pdfFilesFrame # PDFs are listed in this frame on load
+            self.studentsDataFrame = master.middleFrame.studentsDataFrame # Student Data From Excel is loaded here
+            self.master = master
+            self.main = master.master
 
-        self.grid_rowconfigure((0, 1, 2, 3, 5), weight=1)
-        self.grid_rowconfigure(4, weight=8)
-        self.grid_columnconfigure(0, weight=1)
+            self.grid_rowconfigure((0, 1, 2, 3, 5), weight=1)
+            self.grid_rowconfigure(4, weight=8)
+            self.grid_columnconfigure(0, weight=1)
 
-        # Load PDFs Button 
-        # Load Excel File
-        # Select Sheet_name appears after the excel is loaded
-        # Go to WelcomeScreen
-        # Empty row to push the Buttons upwards
+            # Load PDFs Button 
+            # Load Excel File
+            # Select Sheet_name appears after the excel is loaded
+            # Go to WelcomeScreen
+            # Empty row to push the Buttons upwards
 
-        self.loadPDFsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Load PDFs", command=self.loadPDFsDir)
-        self.clearPDFsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Clear PDFs", state="disabled", hover_color="red", command=self.clearPDFsDir)
+            self.loadPDFsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Load PDFs", command=self.loadPDFsDir)
+            self.clearPDFsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Clear PDFs", state="disabled", hover_color="red", command=self.clearPDFsDir)
 
-        self.loadExcelBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Load Students", command=self.loadStudentsData)
-        self.clearStudentsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Clear Students", state="disabled", hover_color="red", command=self.clearStudentsData)
+            self.loadExcelBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Load Students", command=self.loadStudentsData)
+            self.clearStudentsBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Clear Students", state="disabled", hover_color="red", command=self.clearStudentsData)
 
-        self.backBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Home Screen", hover_color="red", command=self.navigateToMainScreen)
+            self.backBtn = customtkinter.CTkButton(self, font=master.buttonFont, text="Home Screen", hover_color="red", command=self.navigateToMainScreen)
 
-        self.loadPDFsBtn.grid(row=0, column=0)
-        self.clearPDFsBtn.grid(row=1, column=0)
+            self.loadPDFsBtn.grid(row=0, column=0)
+            self.clearPDFsBtn.grid(row=1, column=0)
 
-        self.loadExcelBtn.grid(row=2, column=0)
-        self.clearStudentsBtn.grid(row=3, column=0)
+            self.loadExcelBtn.grid(row=2, column=0)
+            self.clearStudentsBtn.grid(row=3, column=0)
 
-        self.backBtn.grid(row=5, column=0)
-
+            self.backBtn.grid(row=5, column=0)
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
+            
+            
     def loadPDFsDir(self):
         global PDFS_LIST
         
@@ -78,37 +83,41 @@ class LeftSideBar(customtkinter.CTkFrame):
             messagebox.showinfo(parent=self, title="Success", message="PDFs Loaded Successfully. Please Double Check the Loaded PDFs List.")
 
         except Exception as exception:
-            messagebox.showerror(title="Runtime Error", message="Something went wrong in runtime")
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
         
     def getSheetName(self, sheets):
-        
-        def loadSheet():
-            if not comboBox.get() in sheets:
-                messagebox.showerror(parent=self, title="Invalid", message="Invalid Sheet Name Provided, Please Select One from the list")
-            else:
-                self.sheetName = comboBox.get()
-                sheetsPopUpWindow.destroy()
-        
-        def disable_event():
-            return
-        
-        sheetsPopUpWindow = customtkinter.CTkToplevel()
-        sheetsPopUpWindow.resizable(False, False)
-        sheetsPopUpWindow.protocol("WM_DELETE_WINDOW", disable_event)   # DISABLE THE CLOSE BUTTON
-        sheetsPopUpWindow.grid_rowconfigure((0, 1, 2), weight=1)
-        sheetsPopUpWindow.grid_columnconfigure(0, weight=1)
+        try: 
+            def loadSheet():
+                if not comboBox.get() in sheets:
+                    messagebox.showerror(parent=self, title="Invalid", message="Invalid Sheet Name Provided, Please Select One from the list")
+                else:
+                    self.sheetName = comboBox.get()
+                    sheetsPopUpWindow.destroy()
+            
+            def disable_event():
+                return
+            
+            sheetsPopUpWindow = customtkinter.CTkToplevel()
+            sheetsPopUpWindow.resizable(False, False)
+            sheetsPopUpWindow.protocol("WM_DELETE_WINDOW", disable_event)   # DISABLE THE CLOSE BUTTON
+            sheetsPopUpWindow.grid_rowconfigure((0, 1, 2), weight=1)
+            sheetsPopUpWindow.grid_columnconfigure(0, weight=1)
 
-        headerLable = customtkinter.CTkLabel(sheetsPopUpWindow, text="Please Select The Sheet Name", font=self.master.buttonFont)
-        comboBox = customtkinter.CTkComboBox(sheetsPopUpWindow, values=sheets, width=250, button_color="#2cc985", border_color="#2cc985", dropdown_hover_color="#2cc985", font=self.master.buttonFont, dropdown_font=self.master.buttonFont)
-        loadSheetBtn = customtkinter.CTkButton(sheetsPopUpWindow, text="Load Sheet", font=self.master.buttonFont, command=loadSheet)
+            headerLable = customtkinter.CTkLabel(sheetsPopUpWindow, text="Please Select The Sheet Name", font=self.master.buttonFont)
+            comboBox = customtkinter.CTkComboBox(sheetsPopUpWindow, values=sheets, width=250, button_color="#2cc985", border_color="#2cc985", dropdown_hover_color="#2cc985", font=self.master.buttonFont, dropdown_font=self.master.buttonFont)
+            loadSheetBtn = customtkinter.CTkButton(sheetsPopUpWindow, text="Load Sheet", font=self.master.buttonFont, command=loadSheet)
 
-        headerLable.grid(row=0, column=0, padx=100, pady=10)
-        comboBox.grid(row=1, column=0, padx=100, pady=10)
-        loadSheetBtn.grid(row=2, column=0, padx=100, pady=10)
-        
-        sheetsPopUpWindow.geometry("+%d+%d" % (self.main.winfo_rootx()+50,self.main.winfo_rooty()+50))
-        self.main.wait_window(sheetsPopUpWindow)
-    
+            headerLable.grid(row=0, column=0, padx=100, pady=10)
+            comboBox.grid(row=1, column=0, padx=100, pady=10)
+            loadSheetBtn.grid(row=2, column=0, padx=100, pady=10)
+            
+            sheetsPopUpWindow.geometry("+%d+%d" % (self.main.winfo_rootx()+50,self.main.winfo_rooty()+50))
+            self.main.wait_window(sheetsPopUpWindow)
+            
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
     
     def loadStudentsData(self):
         global STUDENTS_LIST
@@ -171,7 +180,8 @@ class LeftSideBar(customtkinter.CTkFrame):
 
                 messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
         except Exception as exception:
-            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
 
 
     def clearStudentsData(self):
@@ -185,7 +195,8 @@ class LeftSideBar(customtkinter.CTkFrame):
                 self.clearStudentsBtn.configure(state="disabled")
                 self.loadExcelBtn.configure(state="normal")
         except Exception as exception:
-            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
     
 
     def clearPDFsDir(self): 
@@ -199,41 +210,50 @@ class LeftSideBar(customtkinter.CTkFrame):
                 self.clearPDFsBtn.configure(state="disabled")
                 self.loadPDFsBtn.configure(state="normal")
                 PDFS_LIST = []
-        except: 
-            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
-
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
 
     def navigateToMainScreen(self):
-        status = messagebox.askokcancel(parent=self, title="You Sure?", message="Are You Sure to Proceed? Data on This Tab will be lost")
-        if status:
-            self.master.navigateToMainScreen()
-
+        try:
+            status = messagebox.askokcancel(parent=self, title="You Sure?", message="Are You Sure to Proceed? Data on This Tab will be lost")
+            if status:
+                self.master.navigateToMainScreen()
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
+            
 class MiddleFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
+        try: 
+            super().__init__(master, **kwargs)
 
-        self.master = master
-        self.textBoxFont = customtkinter.CTkFont(FONT_FAMILY, size=14)
+            self.master = master
+            self.textBoxFont = customtkinter.CTkFont(FONT_FAMILY, size=14)
 
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure((1,2), weight=5)
-        self.grid_columnconfigure(0, weight=1)
+            self.grid_rowconfigure(0, weight=1)
+            self.grid_rowconfigure((1,2), weight=5)
+            self.grid_columnconfigure(0, weight=1)
 
-        # Subject TextArea
-        self.subjectTextBox = customtkinter.CTkTextbox(self, font=self.textBoxFont, height=50, border_width=2)
-        self.subjectTextBox.grid(row=0, column=0, sticky="nsew")
-        self.subjectTextBox.insert("0.0", "Paste The Email Subject Here...")
+            # Subject TextArea
+            self.subjectTextBox = customtkinter.CTkTextbox(self, font=self.textBoxFont, height=50, border_width=2)
+            self.subjectTextBox.grid(row=0, column=0, sticky="nsew")
+            self.subjectTextBox.insert("0.0", "Paste The Email Subject Here...")
 
-        # Email Body TextArea
-        self.bodyTextBox = customtkinter.CTkTextbox(self, font=self.textBoxFont,  border_width=2)
-        self.bodyTextBox.grid(row=1, column=0, pady=5, sticky="nsew")
-        self.bodyTextBox.insert("0.0", "Paste The Email Body Content Here...")
+            # Email Body TextArea
+            self.bodyTextBox = customtkinter.CTkTextbox(self, font=self.textBoxFont,  border_width=2)
+            self.bodyTextBox.grid(row=1, column=0, pady=5, sticky="nsew")
+            self.bodyTextBox.insert("0.0", "Paste The Email Body Content Here...")
 
-        # Excel Loaded Table
-        self.studentsDataFrame = CTkXYScrollableFrame(self)
-        self.studentsDataFrame.grid(row=2, column=0, sticky="nsew")
+            # Excel Loaded Table
+            self.studentsDataFrame = CTkXYScrollableFrame(self)
+            self.studentsDataFrame.grid(row=2, column=0, sticky="nsew")
 
-
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
+            
+            
 class FilesSidebar(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -241,19 +261,23 @@ class FilesSidebar(customtkinter.CTkScrollableFrame):
 
 class BottomButtonsBar(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        
-        self.master = master
+        try: 
+            super().__init__(master, **kwargs)
+            
+            self.master = master
 
-        self.grid_rowconfigure(0, weight=1)
-        # self.grid_columnconfigure((1, 2, 3), weight=1)
-        # self.grid_columnconfigure(0, weight=10)
-        self.grid_columnconfigure(0, weight=1)
+            self.grid_rowconfigure(0, weight=1)
+            # self.grid_columnconfigure((1, 2, 3), weight=1)
+            # self.grid_columnconfigure(0, weight=10)
+            self.grid_columnconfigure(0, weight=1)
 
-        # SendEmails Button
-        self.sendEmailsBtn = customtkinter.CTkButton(self, font=self.master.buttonFont, text="Send Emails", command=self.sendEmailsListner)
-        self.sendEmailsBtn.grid(row=0, column=0, padx=20, pady=(0, 5), sticky="e")
-
+            # SendEmails Button
+            self.sendEmailsBtn = customtkinter.CTkButton(self, font=self.master.buttonFont, text="Send Emails", command=self.sendEmailsListner)
+            self.sendEmailsBtn.grid(row=0, column=0, padx=20, pady=(0, 5), sticky="e")
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
+            
     def sendEmailsListner(self):
 
         def formatData(papers, students, subject, body):
@@ -293,10 +317,10 @@ class BottomButtonsBar(customtkinter.CTkFrame):
                     messagebox.showerror(parent=self, title='Missing Students Data', message='Missing Students Data, make suer valid list of students is loaded')
                     return
                 elif len(EMAIL_SUBJECT_TEXT) == 0:
-                    messagebox.showerror(parent=self, title='Missing Email Subject Text', message='Please Pate a Valid email subject in the subject area')
+                    messagebox.showerror(parent=self, title='Missing Email Subject Text', message='Please Paste a Valid email subject in the subject area')
                     return
                 elif len(EMAIL_BODY_TEXT) == 0:
-                    messagebox.showerror(parent=self, title='Missing Email Body Text', message='Please Pate a Valid email body in the email body area')
+                    messagebox.showerror(parent=self, title='Missing Email Body Text', message='Please Paste a Valid email body in the email body area')
                     return
                 
                 formattedData = formatData(PDFS_LIST, STUDENTS_LIST, EMAIL_SUBJECT_TEXT, EMAIL_BODY_TEXT)
@@ -316,46 +340,59 @@ class BottomButtonsBar(customtkinter.CTkFrame):
                 self.master.navigateToEmailSenderUtility(formattedData)
                 
         except Exception as exception:
-            messagebox.showerror(title='Runtime Error', message='Something went wrong in runtime')
-
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
 
 class ResultsUtility(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.master = master 
+        try: 
+            super().__init__(master, **kwargs)
+            self.master = master 
 
-        self.grid_rowconfigure(0, weight=4)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_columnconfigure((0, 2), weight=1)
-        self.grid_columnconfigure(1, weight=20)
+            self.grid_rowconfigure(0, weight=4)
+            self.grid_rowconfigure(1, weight=1)
+            self.grid_columnconfigure((0, 2), weight=1)
+            self.grid_columnconfigure(1, weight=20)
 
-        self.buttonFont = customtkinter.CTkFont(family=FONT_FAMILY, size=15)
+            self.buttonFont = customtkinter.CTkFont(family=FONT_FAMILY, size=15)
 
-        # FilesSidebar (pdfFilesFrame is used in LeftSideBar)
-        self.pdfFilesFrame = FilesSidebar(self)
-        self.pdfFilesFrame.grid(row=0, column=2, ipadx=40, padx=(5,0), pady=5, sticky="nsew")
+            # FilesSidebar (pdfFilesFrame is used in LeftSideBar)
+            self.pdfFilesFrame = FilesSidebar(self)
+            self.pdfFilesFrame.grid(row=0, column=2, ipadx=40, padx=(5,0), pady=5, sticky="nsew")
 
-        # MiddleFrame 
-        self.middleFrame = MiddleFrame(self)
-        self.middleFrame.grid(row=0, column=1, pady=5, padx=(5, 0), sticky="nsew")
-        
-        # LeftSideBar
-        self.leftSideBar = LeftSideBar(self)
-        self.leftSideBar.grid(row=0, column=0, rowspan=2, ipadx=10, sticky="nsew")
-
-        # BottonButtonBar (Buttons not showing)
-        self.bottomButtonBar = BottomButtonsBar(self)
-        self.bottomButtonBar.grid(row=1, column=1, ipady=20, columnspan=2, sticky="nsew")
-
-    def navigateToMainScreen(self):
-        self.master.navigateToMainScreen(self)
-
-    def navigateToEmailSenderUtility(self, formattedData):
-        # On hold the ResultsUtility
-        # Open the emails Utility
-        # On Release (Success: ReportUtility)
-        self.master.navigateToEmailSenderUtility(formattedData)
+            # MiddleFrame 
+            self.middleFrame = MiddleFrame(self)
+            self.middleFrame.grid(row=0, column=1, pady=5, padx=(5, 0), sticky="nsew")
             
+            # LeftSideBar
+            self.leftSideBar = LeftSideBar(self)
+            self.leftSideBar.grid(row=0, column=0, rowspan=2, ipadx=10, sticky="nsew")
+
+            # BottonButtonBar (Buttons not showing)
+            self.bottomButtonBar = BottomButtonsBar(self)
+            self.bottomButtonBar.grid(row=1, column=1, ipady=20, columnspan=2, sticky="nsew")
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
+            
+            
+    def navigateToMainScreen(self):
+        try:
+            self.master.navigateToMainScreen(self)
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()
+            
+            
+    def navigateToEmailSenderUtility(self, formattedData):
+        try:
+            # On hold the ResultsUtility
+            # Open the emails Utility
+            # On Release (Success: ReportUtility)
+            self.master.navigateToEmailSenderUtility(formattedData)
+        except Exception as exception: 
+            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
+            self.destroy()    
 
     
     
