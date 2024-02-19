@@ -8,7 +8,7 @@ from results_utility import ResultsUtility
 
 customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
 # customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
-customtkinter.set_default_color_theme("green")  # Themes: blue (default), dark-blue, green
+customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 
 SCREEN_SIZE = (1080, 500)
 
@@ -28,6 +28,7 @@ class App(customtkinter.CTk):
 
         self.main_screen = WelcomeScreen(self)
         self.main_screen.grid(row=0, column=0, sticky="nsew")
+        self.eval('tk::PlaceWindow . center')
 
         self.mainloop()
 
