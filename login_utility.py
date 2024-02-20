@@ -19,6 +19,7 @@ class LoginUtility(customtkinter.CTkToplevel):
             self.geometry(f"{size[0]}x{size[1]}")
             self.resizable(False, False)
             self.protocol("WM_DELETE_WINDOW", disable_close_event)   # DISABLE THE CLOSE BUTTON
+            master.eval(f'tk::PlaceWindow {str(self)} center')
             
             self.grid_rowconfigure(0, weight=1)
             self.grid_rowconfigure(1, weight=10)

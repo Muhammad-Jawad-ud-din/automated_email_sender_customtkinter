@@ -179,6 +179,7 @@ class LeftSideBar(customtkinter.CTkFrame):
                 self.clearStudentsBtn.configure(state="normal")
 
                 messagebox.showinfo(title="Observe The Data In Tables", message="Excels may hold data in different foramts, please observe the data loaded from excel in the middle table.")
+                messagebox.showinfo(title="Update Email Subject & Body", message="Please paste the email subject and body before proceeding to Log In")
         except Exception as exception:
             messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
             self.destroy()

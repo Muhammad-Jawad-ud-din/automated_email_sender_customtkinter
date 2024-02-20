@@ -1,7 +1,7 @@
 import customtkinter
 from tkinter import messagebox
 
-from main_screen import WelcomeScreen
+from welcom_screen import WelcomeScreen
 from login_utility import LoginUtility
 from emails_utility import EmailsUtility
 from results_utility import ResultsUtility
@@ -27,8 +27,8 @@ class App(customtkinter.CTk):
             self.mailer = '' 
             self.session_started = False
 
-            self.main_screen = WelcomeScreen(self)
-            self.main_screen.grid(row=0, column=0, sticky="nsew")
+            self.welcom_screen = WelcomeScreen(self)
+            self.welcom_screen.grid(row=0, column=0, sticky="nsew")
             self.eval('tk::PlaceWindow . center')
 
             self.mainloop()
@@ -56,8 +56,8 @@ class App(customtkinter.CTk):
     def navigateToMainScreen(self, current):
         try:
             current.destroy()
-            self.main_screen = WelcomeScreen(self)
-            self.main_screen.grid(row=0, column=0, sticky="nsew")
+            self.welcom_screen = WelcomeScreen(self)
+            self.welcom_screen.grid(row=0, column=0, sticky="nsew")
         except Exception as exception:
             messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
             self.destroy()

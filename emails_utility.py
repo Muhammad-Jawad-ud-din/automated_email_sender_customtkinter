@@ -22,6 +22,7 @@ class EmailsUtility(customtkinter.CTkToplevel):
 
             self.geometry(f"{size[0]}x{size[1]}")
             self.protocol("WM_DELETE_WINDOW", disable_close_event)   # DISABLE THE CLOSE BUTTON
+            master.eval(f'tk::PlaceWindow {str(self)} center')
             self.resizable(False, False)
 
             self.master = master 

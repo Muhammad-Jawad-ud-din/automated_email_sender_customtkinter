@@ -19,7 +19,7 @@ class WelcomeScreen(customtkinter.CTkFrame):
             self.descriptionFont = customtkinter.CTkFont(family=GLOBAL_FONT, size=15)
             self.buttonsFont = customtkinter.CTkFont(family=GLOBAL_FONT, size=20)
 
-            self.headerLable = customtkinter.CTkLabel(self, text="Automated Email Sender Utility",font=self.headerFont) #text="Automated Email Sender Utility"
+            self.headerLable = customtkinter.CTkLabel(self, text="Automated Email Sender Utility",font=self.headerFont) 
             self.descriptionText = customtkinter.CTkLabel(self, text=DESCRIPTION_TEXT,font=self.descriptionFont)
             self.buttonsFrame = customtkinter.CTkFrame(self)
 
