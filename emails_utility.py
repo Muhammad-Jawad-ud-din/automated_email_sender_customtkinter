@@ -106,13 +106,14 @@ class EmailsUtility(customtkinter.CTkToplevel):
             
     def send_emails_to_students(self):
         try:
+            global SENDER_THREAD
+            
             self.sending = True
-            sender_thread = Thread(target=self.sender_thread_target)
-            sender_thread.start()
-        
+            SENDER_THREAD = Thread(target=self.sender_thread_target)
+            SENDER_THREAD.start()
         except Exception as exception: 
-            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
             self.destroy()
+            SENDER_THREAD.join()
         
     def sender_thread_target(self):
         try: 
@@ -138,9 +139,8 @@ class EmailsUtility(customtkinter.CTkToplevel):
             self.sending = False
             messagebox.showinfo(parent=self, title='Proceess Completed', message="Remaining entries on the list (if any) were failed. Please note them down.")
         except Exception as exception: 
-            messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
-            self.destroy() 
-            
+            pass            
+        
     # def not_in_use_plain_create_email_template_for_student(self, student):
     #     student_message = EmailMessage()
     #     student_message['Subject'] = student['subject']

@@ -61,6 +61,8 @@ class LeftSideBar(customtkinter.CTkFrame):
     def loadPDFsDir(self):
         global PDFS_LIST
         
+        # clear previous list if any 
+        PDFS_LIST = list()
         try: 
             directorypath = filedialog.askdirectory()
             if (not directorypath):
@@ -305,7 +307,6 @@ class BottomButtonsBar(customtkinter.CTkFrame):
                 global EMAIL_SUBJECT_TEXT 
                 global EMAIL_BODY_TEXT 
 
-                # PDFS_NAMES_LIST
                 # Studnets Data
                 # Subject & Body
                 EMAIL_SUBJECT_TEXT = self.master.middleFrame.subjectTextBox.get("0.0", "end-1c")

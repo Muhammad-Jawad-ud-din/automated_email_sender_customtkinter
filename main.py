@@ -70,7 +70,7 @@ class App(customtkinter.CTk):
             if self.session_started:
                 self.emailsUtility = EmailsUtility(self, SCREEN_SIZE, self.mailer, self.session_email_address, data)
             else: 
-                messagebox.showwarning(parent=self, title="Log In Failed", message="Couldn't Proceed Further...")
+                messagebox.showwarning(parent=self, title="Log In Failed", message="You must log in to proceed further")
             self.deiconify()
         except Exception as exception: 
             messagebox.showerror(title="Uh-Oh! Error Occured", message=exception)
