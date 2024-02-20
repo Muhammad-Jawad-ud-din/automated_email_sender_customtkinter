@@ -1,4 +1,5 @@
 import customtkinter
+from tkinter import messagebox
 
 GLOBAL_FONT = "Cascadia Mono" # "Segoe Print" "Constantia"
 DESCRIPTION_TEXT = '''Welcome to the Email Sender GUI App! 

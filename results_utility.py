@@ -354,7 +354,7 @@ class ResultsUtility(customtkinter.CTkFrame):
             self.grid_rowconfigure(1, weight=1)
             self.grid_columnconfigure((0, 2), weight=1)
             self.grid_columnconfigure(1, weight=20)
-
+            
             self.buttonFont = customtkinter.CTkFont(family=FONT_FAMILY, size=15)
 
             # FilesSidebar (pdfFilesFrame is used in LeftSideBar)

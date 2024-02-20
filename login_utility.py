@@ -16,6 +16,7 @@ class LoginUtility(customtkinter.CTkToplevel):
                 return
             
             self.master = master 
+            self.title('Google Account Log In')
             self.geometry(f"{size[0]}x{size[1]}")
             self.resizable(False, False)
             self.protocol("WM_DELETE_WINDOW", disable_close_event)   # DISABLE THE CLOSE BUTTON

@@ -77,4 +77,4 @@ class App(customtkinter.CTk):
             self.destroy()
             
 if __name__ == "__main__":
-    app = App("Automated Emailer", SCREEN_SIZE)
+    app = App("Automated Paper(s) Emailer", SCREEN_SIZE)
